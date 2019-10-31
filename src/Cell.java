@@ -6,6 +6,7 @@ public class Cell {
     private int col;
     private boolean visited;
     private ArrayList<Cell> unvisitedNeighbors = new ArrayList<>();
+    private Cell parent;
 
     private boolean topWall = true;
     private boolean rightWall = true;
@@ -67,7 +68,7 @@ public class Cell {
         return unvisitedNeighbors.get(rand.nextInt(unvisitedNeighbors.size()));
     }
 
-    private int getCellLocation(int row, int col) {
+    public int getCellLocation(int row, int col) {
         if (row < 0 || col < 0 || row > MazeComponent.NUM_OF_COLS - 1 || col > MazeComponent.NUM_OF_ROWS - 1) {
             return -1;
         } else {
@@ -88,7 +89,7 @@ public class Cell {
         visited = true;
     }
 
-    private boolean isVisited() {
+    public boolean isVisited() {
         return visited;
     }
 
@@ -127,5 +128,7 @@ public class Cell {
     public boolean isLeftWall() {
         return leftWall;
     }
+
+    public void setParent(Cell parent) { this.parent = parent; }
 
 }

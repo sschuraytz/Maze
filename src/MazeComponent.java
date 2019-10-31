@@ -6,17 +6,23 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Stack;
 
 public class MazeComponent extends JComponent {
 
-    static final int NUM_OF_ROWS = 15;
+    static final int NUM_OF_ROWS = 5;
     static final int NUM_OF_COLS = NUM_OF_ROWS;
     private static final int CELL_WIDTH = 30;
+    private static final int MARGIN = 10;
+
     private ArrayList<Cell> cellArray = new ArrayList<>();
     private ArrayList<Cell> unvisitedArray = new ArrayList<>();
+
     private Cell startCell;
     private Cell endCell;
+    boolean solutionIsVisible = false;
 
     public MazeComponent() {
         createCells();
@@ -26,6 +32,10 @@ public class MazeComponent extends JComponent {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         drawCells(graphics);
+
+       if (solutionIsVisible) {
+           depthFirstSolver(graphics, startCell);
+        }
     }
 
     private void setUpMaze() {
@@ -40,20 +50,19 @@ public class MazeComponent extends JComponent {
 
         while (unvisitedArray.size() > 0) {
             currentCell.setUnvisitedNeighborList(currentCell.checkNeighboringCells(cellArray, currentCell.getCol(), currentCell.getRow()));
-            if (currentCell.getUnvisitedNeighborList().size() > 0 ) {
+
+            if (currentCell.getUnvisitedNeighborList().size() > 0) {
                 chosenCell = currentCell.getRandomNeighbor(currentCell.getUnvisitedNeighborList());
                 removeWalls(currentCell, chosenCell);
-
                 if (currentCell.getUnvisitedNeighborList().size() > 1) {
                     stack.push(currentCell);        //push the current cell to the stack if it has more than one unvisited neighbor
                 }
 
+
                 currentCell = chosenCell;
                 currentCell.setVisited();
                 unvisitedArray.remove(currentCell);
-
-            }
-            else if (!stack.empty()) {
+            } else if (!stack.empty()) {
                 currentCell = stack.pop();
             }
         }
@@ -127,6 +136,35 @@ public class MazeComponent extends JComponent {
         {
             current.setTopWall(false);
             chosen.setBottomWall(false);
+        }
+    }
+
+    public void depthFirstSolver(Graphics graphics, Cell cell) {
+        Stack<Cell> stack = new Stack<>();
+        HashSet<Cell> visited = new HashSet<>();
+        List<Cell> winningPath = new ArrayList<>();
+        winningPath.add(cellArray.get(cell.getCellLocation(cell.getRow(), cell.getCol())));
+        visited.add(cell);
+        stack.push(cell);
+        while(!stack.isEmpty()) {
+            System.out.println("hi");
+            Cell temp = stack.pop();
+            winningPath.add(temp);
+            if(!visited.contains(temp)) {
+                visited.add(temp);
+                for(Cell c : temp.getUnvisitedNeighborList()) {
+                    stack.push(c);
+                }
+            }
+        }
+        depthFirstGraphics(graphics, winningPath);
+    }
+
+    public void depthFirstGraphics(Graphics graphics, List<Cell> winningPath) {
+        graphics.setColor(Color.pink);
+        for (Cell winningNode : winningPath) {
+            graphics.drawLine(winningNode.getRow() * CELL_WIDTH + MARGIN, winningNode.getCol() * CELL_WIDTH + MARGIN,
+                    winningNode.getRow() * CELL_WIDTH + CELL_WIDTH - MARGIN, winningNode.getCol() * CELL_WIDTH + MARGIN);
         }
     }
 }

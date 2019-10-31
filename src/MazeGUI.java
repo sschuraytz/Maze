@@ -1,3 +1,4 @@
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -7,6 +8,7 @@ import java.awt.Color;
 
 public class MazeGUI extends JFrame {
     private MazeComponent mazeComponent = new MazeComponent();
+    private JButton solutionButton = new JButton("Show Solution");
 
     public MazeGUI() {
         setTitle("a-MAZE-ing");
@@ -18,12 +20,22 @@ public class MazeGUI extends JFrame {
 
         JLabel top = new JLabel("  ");
         JLabel left = new JLabel("  ");
+
         root.add(top, BorderLayout.NORTH);
         root.add(left, BorderLayout.WEST);
+        root.add(solutionButton, BorderLayout.SOUTH);
         root.add(mazeComponent, BorderLayout.CENTER);
 
         setContentPane(root);
         root.setBackground(Color.BLACK);
+        showSolution();
         root.setVisible(true);
+    }
+
+    public void showSolution() {
+        solutionButton.addActionListener(event -> {
+            mazeComponent.solutionIsVisible = true;
+            repaint();
+        });
     }
 }
