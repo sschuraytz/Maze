@@ -10,9 +10,9 @@ import java.util.Stack;
 
 public class MazeComponent extends JComponent {
 
-    static final int NUM_OF_ROWS = 13;
+    static final int NUM_OF_ROWS = 15;
     static final int NUM_OF_COLS = NUM_OF_ROWS;
-    private static final int CELL_WIDTH = 20;
+    private static final int CELL_WIDTH = 30;
     private ArrayList<Cell> cellArray = new ArrayList<>();
     private ArrayList<Cell> unvisitedArray = new ArrayList<>();
     private Cell startCell;
